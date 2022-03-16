@@ -105,7 +105,7 @@ public final class SearchUtil {
         if (fields.size() > 1) {
             final MultiMatchQueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(dto.getSearchTerm())
                     .type(MultiMatchQueryBuilder.Type.CROSS_FIELDS)
-                    .operator(Operator.AND);
+                    .operator(Operator.OR);
 
             fields.forEach(queryBuilder::field);
 
@@ -116,7 +116,7 @@ public final class SearchUtil {
                 .findFirst()
                 .map(field ->
                         QueryBuilders.matchQuery(field, dto.getSearchTerm())
-                                .operator(Operator.AND))
+                                .operator(Operator.OR))
                 .orElse(null);
     }
 
