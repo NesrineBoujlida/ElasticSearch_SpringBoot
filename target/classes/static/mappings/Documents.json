@@ -12,8 +12,11 @@
     "content": {
       "type": "text"
     },
-        "filepath": {
+    "filepath": {
       "type": "text"
+    },
+    "created": {
+      "type": "date"
     }
   }
 }

@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Date;
 import java.util.List;
 
+
 public final class SearchUtil {
 
     private SearchUtil() {}

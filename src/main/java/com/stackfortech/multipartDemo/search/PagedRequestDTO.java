@@ -1,7 +1,7 @@
 package com.stackfortech.multipartDemo.search;
 
 public class PagedRequestDTO {
-    private static final int DEFAULT_SIZE = 100;
+    private static final int DEFAULT_SIZE = 10000000;
 
     private int page;
     private int size;

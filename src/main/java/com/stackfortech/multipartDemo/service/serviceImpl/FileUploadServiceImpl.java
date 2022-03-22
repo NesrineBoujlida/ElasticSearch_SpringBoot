@@ -42,6 +42,10 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import java.util.*;
+import java.util.Date;
+
+
+
 
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
@@ -87,7 +91,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 dto
         );
 
-        return searchInternal(request);
+        return searchInternal(request,dto);
     }
 
     /**
@@ -96,14 +100,14 @@ public class FileUploadServiceImpl implements FileUploadService {
      * @param date Date that is forwarded to the search.
      * @return Returns all vehicles created since forwarded date.
      */
-    public List<Documents> getAllVehiclesCreatedSince(final Date date) {
+    public List<Documents> getAllVehiclesCreatedSince(SearchRequestDTO dto,final Date date) {
         final SearchRequest request = SearchUtil.buildSearchRequest(
                 Indices.Documents_INDEX,
                 "created",
                 date
         );
 
-        return searchInternal(request);
+        return searchInternal(request,dto);
     }
 
     public List<Documents> searchCreatedSince(final SearchRequestDTO dto, final Date date) {
@@ -113,10 +117,10 @@ public class FileUploadServiceImpl implements FileUploadService {
                 date
         );
 
-        return searchInternal(request);
+        return searchInternal(request,dto);
     }
 
-    private List<Documents> searchInternal(final SearchRequest request) {
+    private List<Documents> searchInternal(final SearchRequest request,SearchRequestDTO dto) {
         if (request == null) {
             LOG.error("Failed to build search request");
             return Collections.emptyList();
@@ -126,14 +130,21 @@ public class FileUploadServiceImpl implements FileUploadService {
             final SearchResponse response = client.search(request, RequestOptions.DEFAULT);
 
             final SearchHit[] searchHits = response.getHits().getHits();
-            final List<Documents> vehicles = new ArrayList<>(searchHits.length);
+            final List<Documents> documents = new ArrayList<>(searchHits.length);
+
             for (SearchHit hit : searchHits) {
-                vehicles.add(
+
+                documents.add(
                         MAPPER.readValue(hit.getSourceAsString(), Documents.class)
+
                 );
             }
 
-            return vehicles;
+
+
+
+
+            return documents;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             return Collections.emptyList();
@@ -150,10 +161,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
 
 
-
-
-
-
+           Date date = new Date();
             byte[] data = file.getBytes();
             Path path = Paths.get(uploadFolderPath + file.getOriginalFilename());
             Files.write(path, data);
@@ -165,7 +173,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             String s = new String(data, StandardCharsets.UTF_8);
         System.out.println(file.getContentType());
             Documents documents = new Documents();
-
+        documents.setId(UUID.randomUUID().toString());
         documents.setType(file.getContentType());
         documents.setName(file.getOriginalFilename());
 
@@ -194,10 +202,12 @@ public class FileUploadServiceImpl implements FileUploadService {
             documents.setContent(mytext);
 
         }
+
         else {
             documents.setContent(String.valueOf(data));
         }
         documents.setFilePath(String.valueOf(path));
+        documents.setCreated(date);
 
         final String DocumentsAsString = MAPPER.writeValueAsString(documents);
 
@@ -206,6 +216,8 @@ public class FileUploadServiceImpl implements FileUploadService {
         request.source(DocumentsAsString, XContentType.JSON);
 
         final IndexResponse response = client.index(request, RequestOptions.DEFAULT);
+
+
 
         return documents;
 
@@ -228,6 +240,9 @@ public class FileUploadServiceImpl implements FileUploadService {
             return null;
         }
     }
+
+
+
 }
       
       

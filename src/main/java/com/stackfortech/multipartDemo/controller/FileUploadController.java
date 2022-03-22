@@ -51,6 +51,7 @@ public class FileUploadController {
                    .toUriString();
            response.setDownloadUri(downloadUri);
            response.setFileId(uploadedFile.getId());
+
            response.setFileType(uploadedFile.getType());
            response.setUploadStatus(true);
            response.setMessage("File Uploaded Successfully!");

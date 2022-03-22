@@ -32,12 +32,13 @@
 
 		</repository>
 
+
 	</repositories>
 
 
 
 	<dependencies>
-
+		<!-- https://mvnrepository.com/artifact/com.aspose/aspose-words -->
 		<dependency>
 			<groupId>e-iceblue</groupId>
 			<artifactId>spire.doc.free</artifactId>

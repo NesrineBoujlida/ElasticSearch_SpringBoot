@@ -1,21 +1,16 @@
 package com.stackfortech.multipartDemo.model;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import javax.annotation.sql.DataSourceDefinition;
 import javax.persistence.GeneratedValue;
-
+import java.time.LocalDate;
+import java.util.Date;
 
 
 public class Documents  {
 
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid",strategy = "uuid2")
+
 
    
     private String id;
@@ -32,15 +27,18 @@ public class Documents  {
   
     private String filePath;
 
-    public Documents() {
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date created;
+
+    public Date getCreated() {
+        return created;
     }
 
-    public Documents(String id, String name, String type, String content, String filePath) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.content = content;
-        this.filePath = filePath;
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Documents() {
     }
 
     public String getId() {
